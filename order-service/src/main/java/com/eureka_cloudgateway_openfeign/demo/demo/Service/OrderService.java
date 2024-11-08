@@ -24,7 +24,6 @@ public class OrderService {
 
 
     public Order saveOrderInDB(long prodId, int qnt){
-        List<Order> listOrders = orderRepository.findAll();
         boolean isProductAvailable = productproxy.stockCheck(prodId, qnt);
         Order newOrder = new Order();
 
