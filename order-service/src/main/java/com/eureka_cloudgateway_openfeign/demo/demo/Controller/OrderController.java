@@ -55,7 +55,6 @@ public class OrderController {
         if(isProductAvailable){
             Product prod = productproxy.getProductByid(prodId);
             newOrder = new Order(
-                            (long) (listOrders.size()+1),
                             prod.getPrice()*qnt,
                             new Date(),
                             Order.OrderState.PROCESSING);
