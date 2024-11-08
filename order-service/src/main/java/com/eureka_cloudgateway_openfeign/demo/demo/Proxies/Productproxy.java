@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface Productproxy {
 
     @GetMapping("/{prodId}")
-    public Product getProductByid(@PathVariable long prodId);
+    Product getProductByid(@PathVariable long prodId);
 
     @GetMapping("/Stock/{prodId}/{qnt}")
-    public boolean stockCheck(@PathVariable long prodId, @PathVariable int qnt);
+    boolean stockCheck(@PathVariable long prodId, @PathVariable int qnt);
 
 }
