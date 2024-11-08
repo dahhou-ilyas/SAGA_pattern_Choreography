@@ -4,6 +4,7 @@ import com.eureka_cloudgateway_openfeign.demo.demo.Entities.Order;
 import com.eureka_cloudgateway_openfeign.demo.demo.Entities.Product;
 import com.eureka_cloudgateway_openfeign.demo.demo.Proxies.Productproxy;
 import com.eureka_cloudgateway_openfeign.demo.demo.Repository.OrderRepository;
+import com.eureka_cloudgateway_openfeign.demo.demo.Service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,7 +21,7 @@ public class OrderController {
     * Product proxy injection
     * */
     @Autowired
-    private Productproxy productproxy;
+    private OrderService orderService;
 
     /*
      * A static list of orders
@@ -48,20 +49,7 @@ public class OrderController {
 
     @GetMapping("/new/{prodId}/{qnt}")
     public Order createOrder(@PathVariable long prodId, @PathVariable int qnt){
-        List<Order> listOrders = orderRepository.findAll();
-        boolean isProductAvailable = productproxy.stockCheck(prodId, qnt);
-        Order newOrder = new Order();
-
-        if(isProductAvailable){
-            Product prod = productproxy.getProductByid(prodId);
-            newOrder = new Order(
-                            prod.getPrice()*qnt,
-                            new Date(),
-                            Order.OrderState.PROCESSING);
-
-            orderRepository.save(newOrder);
-        }
-        return newOrder;
+        return orderService.saveOrderInDB(prodId,qnt);
     }
 
 }
