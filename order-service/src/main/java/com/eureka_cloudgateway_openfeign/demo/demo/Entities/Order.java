@@ -1,5 +1,7 @@
 package com.eureka_cloudgateway_openfeign.demo.demo.Entities;
 
+import org.example.datatransferobject.Events.OrderState;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -64,8 +66,5 @@ public class Order {
         this.dateReceived = dateReceived;
     }
 
-    public enum OrderState {
-        CREATED, PROCESSING, FAILED, PICKEDUP, DELIVERED
-    }
 }
 

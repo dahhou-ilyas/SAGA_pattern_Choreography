@@ -5,11 +5,16 @@ import com.eureka_cloudgateway_openfeign.demo.demo.Entities.Product;
 import com.eureka_cloudgateway_openfeign.demo.demo.Proxies.Productproxy;
 import com.eureka_cloudgateway_openfeign.demo.demo.Repository.OrderRepository;
 import org.example.datatransferobject.Events.OrderEvent;
+import org.example.datatransferobject.Events.OrderState;
+import org.example.datatransferobject.Events.ProductEvent;
+import org.example.datatransferobject.Events.ProductStockState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class OrderService {
 
@@ -32,7 +37,7 @@ public class OrderService {
             newOrder = new Order(
                     prod.getPrice()*qnt,
                     new Date(),
-                    Order.OrderState.PROCESSING);
+                    OrderState.PROCESSING);
 
             orderRepository.save(newOrder);
         }
@@ -40,5 +45,16 @@ public class OrderService {
 
         orderPublisher.publishOrderEvent(newOrder,prodId,qnt);
         return newOrder;
+    }
+
+    public void updateOrde(ProductEvent prdct){
+        Optional<Order> newOrder = orderRepository.findById(prdct.getOrderId());
+        if(newOrder.isPresent()){
+            OrderState newOrderState = prdct.getStockAvailability().equals(ProductStockState.AVAILABLE) ?
+                    OrderState.PROCESSING : OrderState.FAILED;
+
+            newOrder.get().setOrederState(newOrderState);
+            orderRepository.save(newOrder.get());
+        }
     }
 }

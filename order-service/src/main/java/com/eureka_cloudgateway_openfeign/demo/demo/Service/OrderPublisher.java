@@ -15,8 +15,6 @@ public class OrderPublisher {
 
     public void publishOrderEvent(Order newOrder, long prodId, int qnt){
         OrderEvent orderEvent = new OrderEvent(newOrder.getId(), prodId, qnt);
-        //cettte méthode permet de ecrire dans un pipline de order (cette pipline pas de kakfa mias just de mon application utilisé a l'aide de webFlux)
-        //par la suite dans un autre class on listen a cette pipline pour recevoire les order et envoyé par la suite dans kafka
         orderSinks.tryEmitNext(orderEvent);
     }
 }
