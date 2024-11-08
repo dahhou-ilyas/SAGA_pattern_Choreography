@@ -32,7 +32,7 @@ public class OrderService {
         boolean isProductAvailable = productproxy.stockCheck(prodId, qnt);
         Order newOrder = new Order();
 
-        if(isProductAvailable){
+
             Product prod = productproxy.getProductByid(prodId);
             newOrder = new Order(
                     prod.getPrice()*qnt,
@@ -40,7 +40,7 @@ public class OrderService {
                     OrderState.PROCESSING);
 
             orderRepository.save(newOrder);
-        }
+
 
 
         orderPublisher.publishOrderEvent(newOrder,prodId,qnt);
