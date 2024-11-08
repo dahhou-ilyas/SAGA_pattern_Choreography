@@ -1,6 +1,8 @@
 package com.eureka_cloudgateway_openfeign.demo.Controller;
 
 import com.eureka_cloudgateway_openfeign.demo.Entities.Product;
+import com.eureka_cloudgateway_openfeign.demo.Repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -14,24 +16,24 @@ public class ProductController {
     /*
     * A static list of products
     * */
-    ArrayList<Product> productList = new ArrayList(Arrays.asList(
-            new Product((long) 1,"HTC Electric Shaver", 80, 10, "An electric shaver"),
-            new Product((long) 2, "Arduino Uno", 150,  20,"A microcontroller board"),
-            new Product((long) 3, "Canon EOS M100", 5500,  3,"Canon camera")));
+    @Autowired
+    private ProductRepository productRepository;
 
 
     /*
     * Get the product list from the database
     * */
     @GetMapping("/AllProducts")
-    public List<Product> getProductList(){ return productList; }
+    public List<Product> getProductList(){
+        return productRepository.findAll();
+    }
 
     /*
     * Get information about a specific product
     * */
     @GetMapping("/{prodId}")
-    public Product getProductByid(@PathVariable int prodId){
-        return productList.get(prodId);
+    public Product getProductByid(@PathVariable long prodId){
+        return productRepository.findById(prodId).orElseThrow(()->new RuntimeException("Product not found"));
     }
 
     /*
@@ -39,7 +41,9 @@ public class ProductController {
     * */
     @GetMapping("/Stock/{prodId}/{qnt}")
     public boolean stockCheck(@PathVariable long prodId, @PathVariable int qnt){
-        return  productList.get((int) (prodId-1)).stockAvailability(qnt);
+        Product prd = productRepository.findById(prodId).orElseThrow(() -> new RuntimeException("Product not found"));
+
+        return prd.stockAvailability(qnt);
     }
 
 }
